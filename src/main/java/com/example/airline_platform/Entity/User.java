@@ -1,10 +1,8 @@
 package com.example.airline_platform.Entity;
-
+import com.example.airline_platform.Entity.Role;
 import jakarta.persistence.*;
 
-enum Role {
-    USER, ADMIN
-}
+
 
 @Entity
 @Table(name = "users")
