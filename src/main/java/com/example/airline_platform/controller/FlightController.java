@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import com.example.airline_platform.service.AviationStack;
+
 import java.util.*;
 
 @RestController
@@ -81,10 +83,18 @@ public class FlightController {
     public ResponseEntity<Map<String, Object>> searchFlights(
             @RequestParam String origin,
             @RequestParam String destination,
+            @RequestParam(required = false) Boolean realTime,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureDate) {
 
         List<Flight> flights;
 
+
+        if(origin==null || origin.isEmpty() || destination==null || destination.isEmpty()){
+            Map<String,Object> response= new HashMap<>();
+            response.put("status","error");
+            response.put("message","Origin and destination are required!");
+            return ResponseEntity.badRequest().body(response);
+        }
         if (departureDate != null) {
             // Search with specific date
             LocalDateTime startOfDay = departureDate.toLocalDate().atStartOfDay();
@@ -92,15 +102,30 @@ public class FlightController {
 
             flights = flightRepository.findByOriginAndDestinationAndDepartureTimeBetween(
                     origin, destination, startOfDay, endOfDay);
-        } else {
+        }
+        else {
             // Search without specific date
             flights = flightRepository.findByOriginAndDestination(origin, destination);
         }
+        List<Map<String, Object>> realTimeFlights= Collections.emptyList();
+
+        if(realTime!=null && realTime){
+
+            AviationStack aviationStack = new AviationStack();
+            String flightDateStr = departureDate != null ? departureDate.toLocalDate().toString() : null;
+            realTimeFlights = aviationStack.searchFlights(origin, destination, flightDateStr);
+            System.out.println("Real-time flights from AviationStack: " + realTimeFlights);
+        }
+
+
+
+
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("flights", flights);
-        response.put("count", flights.size());
+        response.put("realTimeFlights", realTimeFlights);
+        response.put("count", flights.size() + realTimeFlights.size());
         response.put("search", Map.of(
                 "origin", origin,
                 "destination", destination,
