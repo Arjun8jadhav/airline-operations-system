@@ -58,6 +58,11 @@ A robust Spring Boot backend for an airline booking system with real-time flight
 - **Maven 3.6** or higher
 - **AviationStack API Key** ([Get free key here](https://aviationstack.com/))
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License gives everyone the freedom to use, modify, and distribute your code with minimal restrictions.
+
 ## 🗄️ Database Schema
 
 ```sql
@@ -110,8 +115,3 @@ CREATE TABLE aircrafts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-MIT License gives everyone the freedom to use, modify, and distribute your code with minimal restrictions.
